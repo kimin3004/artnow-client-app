@@ -6,36 +6,59 @@ const INFO_URL = 'https://api.artic.edu/api/v1/artworks?fields=id,title,artist_t
 const CONTENT_URL = 'https://api.artic.edu/api/v1/artworks/@id?fields=title,artist_title,date_display,classification_titles,image_id,style_title,place_of_origin,artist_display,medium_display'
 const IMAGE_URL = 'https://api.artic.edu/api/v1/artworks/21678?fields=id,title,image_id'
 
+
 function getData(url) {
   ajax.open('GET', url, false)
   ajax.send()
   return JSON.parse(ajax.response)
 }
-
 const artInfo = getData(INFO_URL)
+
 
 function artList() {
   const artList = []
 
   let template = `
-    <ul>
-    {{__artList__}}
-    </ul>
+    <nav class="navbar navbar-expand-lg bg-white">
+      <div class="container justify-content-center p-4">
+        <a class="display-4 text-decoration-none text-dark" href="javascript:void(0)" style="font-family: 'Viaoda Libre', cursive;">Art Now.</a>
+      </div>
+    </nav>
+
+    <!--swiper-->
+    <div class="swiper-container mySwiper"  style="width: 100%; height: 100%; top:80px;">
+      <div class="swiper-wrapper py-4" style="display: flex; align-content:center;">
+
+      {{__artList__}}
+
+      </div>
+      <div class="swiper-pagination p-4" style="position:static;"></div>
+    </div> 
   `
 
-  for (let i = 0; i < artInfo.data.length ; i++) {
+  for (let i = 0; i < artInfo.data.length; i++) {
     const posClass = ['painting', 'print', 'prints and drawing']
     if (
       posClass.some(el => artInfo.data[i].classification_titles.includes(el))
-      ) {
+    ) {
       artList.push(`
-        <li>
-          <a href="#/description/${artInfo.data[i].id}">
-          <img src="https://www.artic.edu/iiif/2/${artInfo.data[i].image_id}/full/300,/0/default.jpg" alt="">
-          <h2>${artInfo.data[i].artist_title}</h2>
-          <h3>${artInfo.data[i].title}</h3>
-          </a>
-        </li>
+      <div class="swiper-slide" 
+      style="
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      -webkit-justify-content: center;
+      justify-content: center;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      -webkit-align-items: center;
+      align-items: center;">
+        <img src="https://www.artic.edu/iiif/2/${artInfo.data[i].image_id}/full/300,/0/default.jpg" alt="" 
+        style="display: block; width: 100%; height: 100%; object-fit: cover;"/>
+      </div>
       `)
     }
   }
@@ -75,3 +98,13 @@ function router() {
 
 window.onhashchange = router
 router()
+
+const swiper = new Swiper(".mySwiper", {
+  slidesPerView: 4,
+  spaceBetween: 30,
+  centeredSlides: true,
+  pagination: {
+    el: ".swiper-pagination",
+    clickable: true,
+  },
+});
