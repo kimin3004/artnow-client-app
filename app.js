@@ -66,7 +66,7 @@ function artList() {
   }
   
   // 작품이 많이 없을 경우
-  if(artList.length <= 4) {
+  if (artList.length <= 4) {
     artList.push(`
     <div class="swiper-slide" 
     style="
